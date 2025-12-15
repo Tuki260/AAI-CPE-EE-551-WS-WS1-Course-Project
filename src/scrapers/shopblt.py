@@ -109,16 +109,7 @@ class ShopBLTScraper:
 
 
 
-    def scrape_shopblt(self, url: str, debug_save_html: bool = False):
-        """
-        Scrape a product price from a ShopBLT product URL.
-
-        Returns:
-            (price, currency, brand, model, blt_item)
-
-        Raises:
-            ShopBLTScrapeError
-        """
+    def scrape_shopblt(self, url: str):
         html = self._fetch_html(url)
 
         price, currency = self.get_price_currency(html)
@@ -129,14 +120,7 @@ class ShopBLTScraper:
         if price is not None and currency:
             return price, currency, brand, model, blt_item
 
-        if debug_save_html:
-            with open("shopblt_debug.html", "w", encoding="utf-8", errors="ignore") as f:
-                f.write(html)
-
-        raise ShopBLTScrapeError(
-            "Could not find price in fetched HTML. "
-            "Run with debug_save_html=True and inspect shopblt_debug.html."
-        )
+        raise ShopBLTScrapeError("Could not find a reliable price on the shopBLT page.")
 
 
 if __name__ == "__main__":
@@ -144,5 +128,5 @@ if __name__ == "__main__":
     #url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=01100300U031_BYS0258P.shtml&order_id=198503165"
     #url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=01100500U011_B6TZ187P.shtml&order_id=198503165"
     url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=011003501501_B6QC407P.shtml&order_id=198503165"
-    price, currency, brand, model, blt_item = scraper.scrape_shopblt(url, debug_save_html=True)
+    price, currency, brand, model, blt_item = scraper.scrape_shopblt(url)
     print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}\nBLT Item: {blt_item}")
