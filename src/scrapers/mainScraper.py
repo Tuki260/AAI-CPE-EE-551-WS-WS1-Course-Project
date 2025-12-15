@@ -1,11 +1,13 @@
 import microcenter
 import newegg
+import shopblt
 
 class mainScraper:
     def __init__(self):
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
+            "shopblt.com": shopblt.ShopBLTScraper(),
         }
 
     def determine_website(self, url: str):
@@ -35,7 +37,8 @@ class mainScraper:
 if __name__ == "__main__":
     scraper = mainScraper()
     # url = "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black"
-    url = "https://www.newegg.com/g-skill-ripjaws-m5-neo-rgb-series-32gb-ddr5-6000-cas-latency-cl36-desktop-memory-black/p/N82E16820374642?Item=N82E16820374642"
+    # url = "https://www.newegg.com/g-skill-ripjaws-m5-neo-rgb-series-32gb-ddr5-6000-cas-latency-cl36-desktop-memory-black/p/N82E16820374642?Item=N82E16820374642"
+    url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=011003501501_B6QC407P.shtml&order_id=198503165"
     # scraper.scrape_product(url)
     price, currency, brand, model = scraper.scrape_product(url)
     print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}")

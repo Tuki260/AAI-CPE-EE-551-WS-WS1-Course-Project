@@ -109,7 +109,7 @@ class ShopBLTScraper:
 
 
 
-    def scrape_shopblt(self, url: str):
+    def scrape_data(self, url: str):
         html = self._fetch_html(url)
 
         price, currency = self.get_price_currency(html)
@@ -118,7 +118,7 @@ class ShopBLTScraper:
         blt_item = self.get_blt_item(html)
 
         if price is not None and currency:
-            return price, currency, brand, model, blt_item
+            return price, currency, brand, model#, blt_item
 
         raise ShopBLTScrapeError("Could not find a reliable price on the shopBLT page.")
 
