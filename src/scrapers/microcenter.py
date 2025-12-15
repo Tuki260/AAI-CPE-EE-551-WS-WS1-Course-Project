@@ -31,7 +31,7 @@ class MicrocenterScraper:
         m = re.search(r"'mpn'\s*:\s*'([^']+)'", html)
         return m.group(1) if m else None
 
-    def scrape_microcenter(self, product_url: str):
+    def scrape_data(self, product_url: str):
 
         r = requests.get(product_url, timeout=self.timeout)
         html = r.text
@@ -49,5 +49,5 @@ class MicrocenterScraper:
 if __name__ == "__main__":
     scraper = MicrocenterScraper()
     url = "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black"
-    price, currency, brand, model = scraper.scrape_microcenter(url)
+    price, currency, brand, model = scraper.scrape_data(url)
     print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}")
