@@ -1,0 +1,5 @@
+# Python cache files
+__pycache__/
+
+# Windows Zone.Identifier files
+*:Zone.Identifier
