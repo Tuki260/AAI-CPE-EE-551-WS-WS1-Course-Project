@@ -1,6 +1,5 @@
 # scrapers/newegg.py
 import re
-# from dataclasses import dataclass
 import gzip
 from urllib.error import HTTPError
 from http.cookiejar import CookieJar
@@ -8,6 +7,7 @@ from urllib.request import Request, build_opener, HTTPCookieProcessor
 
 class NeweggScrapeError(Exception):
     """Raised when Newegg data cannot be extracted."""
+
 class NeweggScraper:
     def __init__(self, timeout: int = 20, user_agent: str | None = None):
         self.timeout = timeout
@@ -44,10 +44,7 @@ class NeweggScraper:
 
     def get_price_currency(self, html: str):
         # print(html)
-        m = re.search(
-        r'"price"\s*:\s*"([0-9]+(?:\.[0-9]+)?)"\s*,\s*"priceCurrency"\s*:\s*"([A-Z]{3})"',
-        html
-        )
+        m = re.search(r'"price"\s*:\s*"([0-9]+(?:\.[0-9]+)?)"\s*,\s*"priceCurrency"\s*:\s*"([A-Z]{3})"', html)
 
         if not m:
             return None, None
@@ -68,11 +65,7 @@ class NeweggScraper:
             return None
 
     def get_model(self, html: str):
-        m = re.search(
-        r'"brand"\s*:\s*"([^"]+)"[\s\S]*?"(?:model|Model|mpn)"\s*:\s*"([^"]+)"',
-        html,
-        flags=re.IGNORECASE
-        )
+        m = re.search(r'"brand"\s*:\s*"([^"]+)"[\s\S]*?"(?:model|Model|mpn)"\s*:\s*"([^"]+)"', html)
 
         if m:
             return m.group(2)
@@ -80,10 +73,6 @@ class NeweggScraper:
             return None
 
     def scrape_newegg(self, url: str):
-        """
-        Scrape a product price from a Newegg product URL.
-        Returns ScrapeResult(price, currency) or raises NeweggScrapeError.
-        """
         html = self._fetch_html(url)
         
         brand = self.get_brand(html)
