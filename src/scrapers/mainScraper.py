@@ -1,6 +1,4 @@
-import microcenter
-import newegg
-import shopblt
+from . import microcenter, newegg, shopblt
 
 class mainScraper:
     def __init__(self):
