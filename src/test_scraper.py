@@ -1,6 +1,7 @@
 import pytest
 from scrapers.mainScraper import mainScraper
 
+# pytest -v -s test_scraper.py
 
 class TestMainScraper:
     def setup_method(self):

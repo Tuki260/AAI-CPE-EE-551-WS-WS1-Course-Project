@@ -30,6 +30,9 @@ TO DO
 
 TO DO
 
+Required Python Libraries:
+- requests
+
 
 ### Team Contributions
 

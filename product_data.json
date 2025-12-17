@@ -1,0 +1,16 @@
+{
+    "Corsair Vengeance RGB DDR5 32GB": {
+        "model": "CMH32GX5M2F6000Z36",
+        "category": "RAM",
+        "sources": {
+            "microcenter": {
+                "url": "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black",
+                "prices": []
+            },
+            "newegg": {
+                "url": "https://www.newegg.com/corsair-vengeance-rgb-32gb-2-x-16gb-ddr5-6000-pc5-48000-cas-latency-cl36-desktop-memory-gray/p/N82E16820982285",
+                "prices": []
+            }
+        }
+    }
+}
