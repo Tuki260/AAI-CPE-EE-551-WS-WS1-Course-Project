@@ -1,0 +1,8 @@
+# Python cache files
+__pycache__/
+.pytest_cache/
+
+# Windows Zone.Identifier files
+*:Zone.Identifier
+
+product_data_test.json
