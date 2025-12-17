@@ -51,6 +51,12 @@ Salvatore:
 - Found product pages to be scraped
 
 TO DO 
+
 exception handling
+
 plot historical data
+
 commenting/docstrings
+
+finish UI
+
