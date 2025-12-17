@@ -49,3 +49,8 @@ Salvatore:
 - Made main program that is used by users
 - Added to Readme
 - Found product pages to be scraped
+
+TO DO 
+exception handling
+plot historical data
+commenting/docstrings
