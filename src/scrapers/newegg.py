@@ -9,7 +9,26 @@ class NeweggScrapeError(Exception):
     """Raised when Newegg data cannot be extracted."""
 
 class NeweggScraper:
+    """
+    NeweggScraper class
+
+    This class is used to scrape product data from links that lead to newegg.com.
+    It gets data like price, currency, brand, and model.
+
+    We use regular expressions to look at the html and find the data we want. 
+    The scraper uses HTTP headers and cookies to mimic a real browser session in order to reduce the likelihood of being blocked.
+    """
+
     def __init__(self, timeout: int = 20, user_agent: str | None = None):
+        """
+        Initialize the NeweggScraper objects.
+
+        timeout (int): Maximum number of seconds to wait for a server
+                        response before timing out.
+        user_agent (str): Optional custom User-Agent string.
+                          If one is not given, a default desktop browser User-Agent is used.
+        """
+
         self.timeout = timeout
         self.cookie_jar = CookieJar()
         self.opener = build_opener(HTTPCookieProcessor(self.cookie_jar))
@@ -19,6 +38,18 @@ class NeweggScraper:
             "Chrome/120.0.0.0 Safari/537.36")
 
     def _fetch_html(self, url: str) -> str:
+        """
+        Fetch the raw HTML from a Newegg product page.
+        This method sends an HTTP request with browser-like headers.
+
+        url (str): Newegg product URL.
+
+        Returns:
+            str: HTML content of the page.
+
+        If Newegg blocks the request, the NeweggScrapeError exception is raised
+        """
+
         headers = {
         "User-Agent": self.user_agent,
         "Accept-Language": "en-US,en;q=0.9",
@@ -43,7 +74,16 @@ class NeweggScraper:
         return raw.decode("utf-8", errors="replace")
 
     def get_price_currency(self, html: str):
-        # print(html)
+        """
+        Extract the product price and currency from the HTML.
+
+        html (str): Raw HTML content of the Newegg page.
+
+        Returns:
+            tuple: (price, currency) where price is a float and currency
+                   is a string.
+        """
+
         m = re.search(r'"price"\s*:\s*"([0-9]+(?:\.[0-9]+)?)"\s*,\s*"priceCurrency"\s*:\s*"([A-Z]{3})"', html)
 
         if not m:
@@ -51,20 +91,31 @@ class NeweggScraper:
         return float(m.group(1)), m.group(2)
         
     def get_brand(self, html: str):
+        """
+        Extract the product brand from the HTML.
+
+        html (str): Raw HTML content of the Newegg page.
+
+        Returns:
+            str: Brand name if found, otherwise None.
+        """
+
         m = re.search(r'Key=\\"Brand\\"\s+Value=\\"([^\\"]+)\\\"', html)
         if m:
             return m.group(1)
         else:
             return None
 
-    # def get_series(self, html: str):
-    #     m = re.search(r'Key=\\"Series\\"\s+Value=\\"([^\\"]+)\\\"', html)
-    #     if m:
-    #         return m.group(1)
-    #     else:
-    #         return None
-
     def get_model(self, html: str):
+        """
+        Extract the product model number from the HTML.
+
+        html (str): Raw HTML content of the Newegg page.
+
+        Returns:
+            str: Model number if found, otherwise None.
+        """
+
         m = re.search(r'"brand"\s*:\s*"([^"]+)"[\s\S]*?"(?:model|Model|mpn)"\s*:\s*"([^"]+)"', html)
 
         if m:
@@ -73,6 +124,21 @@ class NeweggScraper:
             return None
 
     def scrape_data(self, url: str):
+        """
+        Scrape product data from a Newegg product URL.
+
+        This method coordinates HTML retrieval and data extraction,
+        ensuring all required fields are present before returning
+        results. It calls the class' other methods to get the needed data.
+
+        url (str): Newegg product page URL.
+
+        Returns:
+            tuple: (price, currency, brand, model)
+
+        If any required data cannot be found, it raises the NeweggScrapeError exception
+        """
+
         html = self._fetch_html(url)
         
         brand = self.get_brand(html)

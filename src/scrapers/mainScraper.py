@@ -1,10 +1,26 @@
 from . import microcenter, newegg, shopblt
 import json
-from pathlib import Path
 from datetime import datetime
 
 class mainScraper:
+    """
+    mainScraper class
+
+    This class acts as a coordinator for multiple website-specific scrapers.
+
+    It also updates a JSON file that stores historical price data for each tracked product.
+    """
+
     def __init__(self):
+        """
+        Initialize the mainScraper and create a dictionary of supported scrapers.
+
+        The dictionary keys are domains, and the values are scraper instances.
+        This makes it easy to add more websites later by adding new entries if needed.
+
+        Uses composition by containing instances of website-specific scrapers.
+        """
+
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
@@ -12,6 +28,15 @@ class mainScraper:
         }
 
     def determine_website(self, url: str):
+        """
+        Determine the website based on the given URL.
+
+        url (str): Product URL entered.
+
+        Returns:
+            str: A supported domain string if recognized, otherwise None.
+        """
+
         if "microcenter.com" in url:
             return "microcenter.com"
         elif "newegg.com" in url:
@@ -19,15 +44,34 @@ class mainScraper:
         elif "shopblt.com" in url:
             return "shopblt.com"
         else:
-            pass # Website not supported
+            return None
 
     def determine_scraper(self, url):
+        """
+        Return the scraper instance that matches the URL's website.
+
+        url (str): Product URL.
+
+        Returns:
+            object: The scraper instance if supported, otherwise None.
+        """
+
         domain = self.determine_website(url)
 
         if domain in self.scrapers:
             return self.scrapers[domain]
 
     def scrape_product(self, url):
+        """
+        Scrape a single product page using the correct scraper.
+
+        url (str): Product URL.
+
+        Returns:
+            tuple: (price, currency, brand, model)
+
+        Website-specific scraper may raise its own custom exception if the price cannot be extracted.
+        """
         scraper = self.determine_scraper(url)
 
         if hasattr(scraper, "scrape_data"):
@@ -36,6 +80,17 @@ class mainScraper:
         return price, currency, brand, model
     
     def update_json_data(self):
+        """
+        Update product_data.json by scraping current prices for each product source.
+
+        Loads the JSON file containing tracked products + sources
+        Scrapes each URL for its current price
+        Appends a new entry to the 'prices' history list with timestamp
+        Writes the updated JSON back to file
+
+        This creates a growing dataset that can later be plotted/analyzed.
+        """
+
         with open("../product_data.json") as f:
             data = json.load(f)
         

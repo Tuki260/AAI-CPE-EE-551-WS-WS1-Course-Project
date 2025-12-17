@@ -4,3 +4,5 @@ __pycache__/
 
 # Windows Zone.Identifier files
 *:Zone.Identifier
+
+product_data_test.json
