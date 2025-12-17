@@ -17,6 +17,7 @@ The problem we are trying to solve is how difficult it is to get parts for a new
 - Motherboard
 - CPU Cooler
 - Case
+- Power supply
 
 We plan to make the representation of this data easily understandable through both numerical and graphical means so that the user can completely understand how the price of any one product has changed over time and if it is the right time to buy that product.
 
@@ -40,9 +41,11 @@ Vincent:
 - Made sub scrapers
 - Made main scraper class
 - Added to Readme
-- TO DO: Make Pytest class for main scraper
+- Made Pytest class for main scraper
+- TO DO (Make utils maybe like clear terminal)
 
 Salvatore:
 - Turned sub scrapers into classes
 - Made main program that is used by users
 - Added to Readme
+- Found product pages to be scraped
