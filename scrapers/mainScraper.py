@@ -21,6 +21,7 @@ class mainScraper:
 
         Uses composition by containing instances of website-specific scrapers.
         """
+        self.json_path = json_path
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
@@ -115,7 +116,7 @@ class mainScraper:
             print(f"[ERROR] Could not read JSON file: {json_path} ({e})")
             return
 
-        with open(self.json_path) as f:
+        with open(json_path) as f:
             data = json.load(f)
         
         timestamp = datetime.now().isoformat()
