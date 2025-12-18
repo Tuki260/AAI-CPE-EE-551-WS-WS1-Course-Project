@@ -1,8 +1,9 @@
 import re
 import gzip
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from http.cookiejar import CookieJar
 from urllib.request import Request, build_opener, HTTPCookieProcessor
+from socket import timeout as SocketTimeout
 
 
 class ShopBLTScrapeError(Exception):
@@ -31,8 +32,9 @@ class ShopBLTScraper:
         """
 
         self.timeout = timeout
-        self.cookie_jar = CookieJar()
+        self.cookie_jar = CookieJar() # Cookie jar helps maintain session like a real browser
         self.opener = build_opener(HTTPCookieProcessor(self.cookie_jar))
+        # Reduces blocking by using realistic user-agent headers later in the code
         self.user_agent = user_agent or (
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
             "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -42,16 +44,7 @@ class ShopBLTScraper:
     def _fetch_html(self, url: str) -> str:
         """
         Fetch the raw HTML from a ShopBLT product page.
-        This method sends an HTTP request with browser-like headers.
-
-        url (str): shopblt product URL.
-
-        Returns:
-            str: HTML content of the page.
-
-        If ShopBLT blocks the request, the ShopBLTScrapeError exception is raised
         """
-
         headers = {
             "User-Agent": self.user_agent,
             "Accept-Language": "en-US,en;q=0.9",
@@ -65,18 +58,30 @@ class ShopBLTScraper:
         req = Request(url, headers=headers)
 
         try:
+            # Attempt to fetch page HTML
             with self.opener.open(req, timeout=self.timeout) as resp:
                 raw = resp.read()
                 encoding = (resp.headers.get("Content-Encoding") or "").lower()
+
         except HTTPError as e:
-            raise ShopBLTScrapeError(f"HTTP {e.code}: Error fetching ShopBLT page") from e
-        
+            # HTTP errors such as 403 or 404
+            raise ShopBLTScrapeError(f"HTTP {e.code} fetching ShopBLT URL: {url}") from e
+        except (URLError, SocketTimeout) as e:
+            # Network or timeout issues
+            raise ShopBLTScrapeError(f"Network/timeout error fetching ShopBLT URL: {url}") from e
+        except Exception as e:
+            # Last-resort safety net
+            raise ShopBLTScrapeError(f"Unexpected error fetching ShopBLT URL: {url}") from e
+
+        # Decompress gzip content if needed
         if "gzip" in encoding:
             try:
                 raw = gzip.decompress(raw)
             except Exception:
+                # If decompression fails, fall back to raw bytes
                 pass
 
+        # Decode HTML so it can be parsed with regex
         return raw.decode("utf-8", errors="replace")
 
     def _clean(self, s: str):
@@ -100,18 +105,10 @@ class ShopBLTScraper:
         Returns:
             tuple: (price, currency) where price is a float and currency is a string.
         """
-
-        m = re.search(
-            r'Your(?:\s|&nbsp;)*Price\s*:\s*(?:</?\w+[^>]*>\s*)*\$([0-9,]+\.\d{2})',
-            html,
-            flags=re.IGNORECASE
-        )
+        # Attempt multiple patterns to handle ShopBLT page variations
+        m = re.search(r'Your(?:\s|&nbsp;)*Price\s*:\s*(?:</?\w+[^>]*>\s*)*\$([0-9,]+\.\d{2})', html, flags=re.IGNORECASE)
         if not m:
-            m = re.search(
-                r'Your(?:\s|&nbsp;)*Price[^$]*\$([0-9,]+\.\d{2})',
-                html,
-                flags=re.IGNORECASE
-            )
+            m = re.search(r'Your(?:\s|&nbsp;)*Price[^$]*\$([0-9,]+\.\d{2})', html, flags=re.IGNORECASE)
         if not m:
             return None, None
 
@@ -127,12 +124,8 @@ class ShopBLTScraper:
         Returns:
             str: Brand name if found, otherwise None.
         """
-
-        patterns = [
-            r'Manufacturer\s*:\s*(?:</?\w+[^>]*>\s*)*Mfg\.\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)',
-            r'Manufacturer\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)',
-            r'\bMfg\.\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)',
-        ]
+        # Multiple patterns are used again to handle different page layouts
+        patterns = [r'Manufacturer\s*:\s*(?:</?\w+[^>]*>\s*)*Mfg\.\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)', r'Manufacturer\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)', r'\bMfg\.\s*:\s*(?:</?\w+[^>]*>\s*)*([^<\n\r]+)']
         for pat in patterns:
             m = re.search(pat, html, flags=re.IGNORECASE)
             if m:
@@ -148,12 +141,8 @@ class ShopBLTScraper:
         Returns:
             str: Model number if found, otherwise None.
         """
-
-        patterns = [
-            r'Mfg\.\s*Part\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)',
-            r'Mfg\s*Part\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)',
-            r'\bPart\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)',
-        ]
+        # Again test different patters to account for the different formats of shopBLT
+        patterns = [r'Mfg\.\s*Part\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)', r'Mfg\s*Part\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)', r'\bPart\s*#\s*:\s*(?:</?\w+[^>]*>\s*)*([A-Za-z0-9._/-]+)']
         for pat in patterns:
             m = re.search(pat, html, flags=re.IGNORECASE)
             if m:
@@ -177,7 +166,7 @@ class ShopBLTScraper:
         """
 
         html = self._fetch_html(url)
-
+        #extraplolating data from the HTML
         price, currency = self.get_price_currency(html)
         brand = self.get_brand(html)
         model = self.get_model(html)
@@ -191,7 +180,7 @@ class ShopBLTScraper:
 if __name__ == "__main__":
     scraper = ShopBLTScraper()
     #url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=01100300U031_BYS0258P.shtml&order_id=198503165"
-    #url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=01100500U011_B6TZ187P.shtml&order_id=198503165"
-    url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=011003501501_B6QC407P.shtml&order_id=198503165"
-    price, currency, brand, model, blt_item = scraper.scrape_shopblt(url)
-    print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}\nBLT Item: {blt_item}")
+    url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=thispage&thispage=01100500U011_B6TZ187P.shtml&order_id=198503165"
+    #url = "https://www.shopblt.com/cgi-bin/shop/shop.cgi?action=enter&thispage=011003000507_BKS1078P.shtml"
+    price, currency, brand, model = scraper.scrape_data(url)
+    print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}")
