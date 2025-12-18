@@ -1,9 +1,9 @@
 import sys
 import json
 from datetime import datetime
-from typing import Any
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import Iterator, Tuple, Dict, Any
 
 def display_menu(options: list[str], prompt: str | None = None):
     """
@@ -239,6 +239,31 @@ def get_price_change(file_path: str, product_name: str) -> float:
 
     return float((best_prices[-1] - best_prices[0]) / best_prices[0] * 100)
 
+def iter_product_price_points(file_path: str, product_name: str) -> Iterator[Tuple[str, int, Dict[str, Any]]]:
+    """
+    Generator that yields all price datapoints for a given product across all sources.
+
+    Yields:
+        (source_name, i, datapoint_dict)
+
+    Example yielded datapoint_dict (depends on your stored format):
+        {"price": 359.99, "currency": "USD", "timestamp": "2025-12-17T20:10:00"}
+    """
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    product = data.get(product_name)
+    if not product:
+        return  # stops generator immediately
+
+    sources = product.get("sources", {})
+    for source_name, source_info in sources.items():
+        prices = source_info.get("prices", [])
+        for i, point in enumerate(prices):
+            yield source_name, i, point
+
+
+
 if __name__ == "__main__":
     # menu_options = [
     #     "CPU",
@@ -258,5 +283,8 @@ if __name__ == "__main__":
     #     if selection is None:
     #         print("Exiting program.")
     #         sys.exit()
-    print(get_latest_prices_for_product("product_data_test.json", "Corsair Vengeance RGB DDR5 32GB"))
-    plot_price_history("product_data_test.json", "Corsair Vengeance RGB DDR5 32GB")
+    # print(get_latest_prices_for_product("product_data_test.json", "Corsair Vengeance RGB DDR5 32GB"))
+    # plot_price_history("product_data_test.json", "Corsair Vengeance RGB DDR5 32GB")
+    for source, i, point in iter_product_price_points("product_data.json", "Corsair Vengeance RGB DDR5 32GB"):
+        print(source, i, point)
+

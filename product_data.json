@@ -5,11 +5,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 409.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 409.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/corsair-vengeance-rgb-32gb-2-x-16gb-ddr5-6000-pc5-48000-cas-latency-cl36-desktop-memory-gray/p/N82E16820982285",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 409.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 409.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -19,11 +37,29 @@
         "sources": {
             "newegg": {
                 "url": "https://www.newegg.com/amd-ryzen-5-9000-series-ryzen-5-9600x-granite-ridge-socket-am5-desktop-cpu-processor/p/N82E16819113844",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 214.0,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 214.0,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "microcenter": {
                 "url": "https://www.microcenter.com/product/682205/amd-ryzen-5-9600x-granite-ridge-am5-390ghz-6-core-boxed-processor-heatsink-not-included",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 179.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 179.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -33,11 +69,29 @@
         "sources": {
             "newegg": {
                 "url": "https://www.newegg.com/intel-core-i7-14th-gen-core-i7-14700k-raptor-lake-lga-1700-desktop-cpu-processor/p/N82E16819118466",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 357.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 357.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "microcenter": {
                 "url": "https://www.microcenter.com/product/670842/intel-core-i7-14700k-raptor-lake-s-refresh-34ghz-twenty-core-lga-1700-boxed-processor-heatsink-not-included",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 299.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 299.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -47,11 +101,29 @@
         "sources": {
             "newegg": {
                 "url": "https://www.newegg.com/intel-core-i9-14th-gen-core-i9-14900-raptor-lake-lga-1700-desktop-cpu-processor/p/N82E16819118474",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 569.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 569.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "microcenter": {
                 "url": "https://www.microcenter.com/product/675999/intel-core-i9-14900-raptor-lake-s-refresh-20ghz-twenty-four-core-lga-1700-boxed-processor-intel-laminar-rh1-cooler-included",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 549.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 549.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -61,7 +133,16 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/690049/asus-nvidia-geforce-rtx-5070-ti-prime-triple-fan-16gb-gddr7-pcie-50-graphics-card",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 749.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 749.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/asus-prime-rtx5070ti-16g-geforce-rtx-5070-ti-16gb-graphics-card-triple-fans/p/N82E16814126757",
@@ -75,11 +156,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/691100/asrock-amd-radeon-rx-9070-xt-steel-legend-triple-fan-16gb-gddr6-pcie-50-graphics-card",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 619.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 619.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/asrock-steel-legend-rx9070xt-sl-16g-radeon-rx-9070-xt-16gb-graphics-card-triple-fans/p/N82E16814930136",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 619.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 619.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -89,11 +188,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/691459/msi-nvidia-geforce-rtx-5070-ti-ventus-3x-overclocked-triple-fan-16gb-gddr7-pcie-50-graphics-card",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 814.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 814.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/msi-rtx-5070-ti-16g-ventus-3x-oc-geforce-rtx-5070-ti-16gb-graphics-card-triple-fans/p/N82E16814137933",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 799.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 799.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -103,11 +220,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/632929/teamgroup-t-force-vulcan-z-32gb-%282-x-16gb%29-ddr4-3200-pc4-25600-cl16-dual-channel-desktop-memory-kit-tlzgd432g3200h-gray",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 239.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 239.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/team-group-t-force-vulcan-z-32gb-ddr4-3200-cas-latency-cl16-desktop-memory-gray/p/N82E16820331618",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 239.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 239.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -117,11 +252,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/616299/corsair-vengeance-lpx-32gb-%282-x-16gb%29-ddr4-3200-pc4-25600-cl16-dual-channel-desktop-memory-kit-cmk32gx4m2e3200c16-black",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 170.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 170.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/corsair-vengeance-lpx-32gb-ddr4-3600-cas-latency-cl18-desktop-memory-black/p/N82E16820236596",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 229.0,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 229.0,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     },
@@ -131,11 +284,29 @@
         "sources": {
             "microcenter": {
                 "url": "https://www.microcenter.com/product/699051/patriot-viper-steel-32gb-%282-x-16gb%29-ddr4-3600-pc4-28800-cl18-dual-channel-desktop-memory-kit-pvs432g360c8k-black",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 197.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 197.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             },
             "newegg": {
                 "url": "https://www.newegg.com/patriot-memory-viper-steel-32gb-ddr4-3600-cas-latency-cl18-desktop-memory-gunmetal-grey/p/N82E16820225206",
-                "prices": []
+                "prices": [
+                    {
+                        "price": 189.99,
+                        "timestamp": "2025-12-17T22:34:45.333083"
+                    },
+                    {
+                        "price": 189.99,
+                        "timestamp": "2025-12-17T22:41:14.002645"
+                    }
+                ]
             }
         }
     }
