@@ -205,13 +205,10 @@ def plot_price_history(file_path: str, product_name: str) -> None:
     plt.tight_layout()
     plt.show()
 
-def get_price_change(file_path: str, product_name: str) -> float:
+def get_best_price_change(file_path: str, product_name: str) -> float:
     """
-    Compute percent price change over time using NumPy.
-
-    Positive value  -> price increased
-    Negative value  -> price decreased
-    0.0             -> insufficient data
+    Compute percent price change over time using the best (minimum) price
+    available across all retailers at each timestamp.
     """
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -219,26 +216,28 @@ def get_price_change(file_path: str, product_name: str) -> float:
     if product_name not in data:
         raise KeyError(f"Product not found: {product_name}")
 
-    prices_with_time = []
+    prices_by_time: dict[datetime, list[float]] = {}
 
     for source in data[product_name]["sources"].values():
         for entry in source.get("prices", []):
             try:
-                prices_with_time.append((
-                    datetime.fromisoformat(entry["timestamp"]),
-                    float(entry["price"])
-                ))
+                t = datetime.fromisoformat(entry["timestamp"])
+                price = float(entry["price"])
             except (KeyError, ValueError, TypeError):
                 continue
 
-    prices_with_time.sort(key=lambda x: x[0])
+            prices_by_time.setdefault(t, []).append(price)
 
-    if len(prices_with_time) < 2:
+    if len(prices_by_time) < 2:
         return 0.0
 
-    prices = np.array([p for _, p in prices_with_time], dtype=float)
+    times = sorted(prices_by_time.keys())
+    best_prices = np.array(
+        [min(prices_by_time[t]) for t in times],
+        dtype=float
+    )
 
-    return float((prices[-1] - prices[0]) / prices[0] * 100)
+    return float((best_prices[-1] - best_prices[0]) / best_prices[0] * 100)
 
 if __name__ == "__main__":
     # menu_options = [
