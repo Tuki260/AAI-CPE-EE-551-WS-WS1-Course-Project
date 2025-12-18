@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from typing import Any
 import matplotlib.pyplot as plt
+import numpy as np
 
 def display_menu(options: list[str], prompt: str | None = None):
     """
@@ -204,6 +205,40 @@ def plot_price_history(file_path: str, product_name: str) -> None:
     plt.tight_layout()
     plt.show()
 
+def get_price_change(file_path: str, product_name: str) -> float:
+    """
+    Compute percent price change over time using NumPy.
+
+    Positive value  -> price increased
+    Negative value  -> price decreased
+    0.0             -> insufficient data
+    """
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if product_name not in data:
+        raise KeyError(f"Product not found: {product_name}")
+
+    prices_with_time = []
+
+    for source in data[product_name]["sources"].values():
+        for entry in source.get("prices", []):
+            try:
+                prices_with_time.append((
+                    datetime.fromisoformat(entry["timestamp"]),
+                    float(entry["price"])
+                ))
+            except (KeyError, ValueError, TypeError):
+                continue
+
+    prices_with_time.sort(key=lambda x: x[0])
+
+    if len(prices_with_time) < 2:
+        return 0.0
+
+    prices = np.array([p for _, p in prices_with_time], dtype=float)
+
+    return float((prices[-1] - prices[0]) / prices[0] * 100)
 
 if __name__ == "__main__":
     # menu_options = [
