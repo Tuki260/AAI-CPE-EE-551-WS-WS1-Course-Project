@@ -21,7 +21,6 @@ class mainScraper:
 
         Uses composition by containing instances of website-specific scrapers.
         """
-        self.json_path = json_path
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
