@@ -40,6 +40,8 @@ AAI-CPE-EE-551-WS-WS1-Course-Project
 └── test_scraper.py
 ```
 
+Our ipynb file is the main file that the user will use for our project. This file import project_utils for various utilities like menu creation and reading data from a json. The ipynb also imports the add_product file for adding new products to the json file. Lastly, we have our scrapers module. This has a main scraper that is composed of the three sub scrapers. The main scraper delegates which links require which scraper to get the data from that link.
+
 ### How To Use
 
 To use our code please download all necessary files/folders. Open the "Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb" file and run the code. The user will be prompted to select from a list of product categories, update the data, or add new products. Users should update the data when they first open the code, as this reruns all the scrapers to ensure the data you select in the next step is the most up to date. After updating data and selecting your category the user will then select specific products within those categories. Users will then be asked if they wish to plot their data, see price changes or see price logs. Based on user selection the code will either display a graphical representation of price vs time, a percent change of lowest price for that product regardless of website, or a log with all historical data entries for that product.
@@ -121,3 +123,4 @@ Requirements (Part 2): your program must have at least four components from the 
   * We have a generator function that iterates through all the price logs of a product so that the user can see all the data points
 - __name__
   * We use __name__ in almost all of our files to test them individually
+
