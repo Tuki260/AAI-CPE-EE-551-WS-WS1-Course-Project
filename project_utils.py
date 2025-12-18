@@ -173,7 +173,6 @@ def plot_price_history(file_path: str, product_name: str) -> None:
             if ts is None or price is None:
                 continue
             if currency and currency != "USD":
-                # If you ever support multiple currencies, convert here instead of skipping.
                 continue
 
             try:
@@ -189,13 +188,13 @@ def plot_price_history(file_path: str, product_name: str) -> None:
         points.sort(key=lambda x: x[0])
         times = [t for t, _ in points]
         prices = [p for _, p in points]
-
+        #plot price data as points on a graph
         plt.plot(times, prices, marker="o", label=source_name)
         plotted_any = True
 
     if not plotted_any:
         raise ValueError(f"No usable price data found to plot for: {product_name}")
-
+    #chart creation for a graph of price over time
     plt.title(f"Price History: {product_name}")
     plt.xlabel("Time")
     plt.ylabel("Price (USD)")
@@ -212,7 +211,7 @@ def get_price_change(file_path: str, product_name: str) -> float:
     """
     with open(file_path, "r", encoding="utf-8") as f:
         data = json.load(f)
-
+    #fale safe to ensure product exists within the json file
     if product_name not in data:
         raise KeyError(f"Product not found: {product_name}")
 
@@ -225,18 +224,19 @@ def get_price_change(file_path: str, product_name: str) -> float:
                 price = float(entry["price"])
             except (KeyError, ValueError, TypeError):
                 continue
-
+            #sorting a list of prices by the time and adding them to a dictionary
             prices_by_time.setdefault(t, []).append(price)
 
     if len(prices_by_time) < 2:
         return 0.0
 
     times = sorted(prices_by_time.keys())
+    #searches for the lowest price for the product chosen
     best_prices = np.array(
         [min(prices_by_time[t]) for t in times],
         dtype=float
     )
-
+    #equation to compare the lowest two prices across any of the websites for the given product and outputs it as a percentage of change
     return float((best_prices[-1] - best_prices[0]) / best_prices[0] * 100)
 
 def iter_product_price_points(file_path: str, product_name: str) -> Iterator[Tuple[str, int, Dict[str, Any]]]:
@@ -255,10 +255,12 @@ def iter_product_price_points(file_path: str, product_name: str) -> Iterator[Tup
     product = data.get(product_name)
     if not product:
         return  # stops generator immediately
-
+    #gets all the prices for the product and outputs them in a list to show all the historical data for that product by website and timestamp
     sources = product.get("sources", {})
+    #itterate by source
     for source_name, source_info in sources.items():
         prices = source_info.get("prices", [])
+        #itterate by price
         for i, point in enumerate(prices):
             yield source_name, i, point
 

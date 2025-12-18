@@ -42,7 +42,7 @@ AAI-CPE-EE-551-WS-WS1-Course-Project
 
 ### How To Use
 
-To use our code please download all necessary files/folders. Next Add product links from Microcenter, newegg or shopBLT to the "product_data.json" file, the JSON does already come preloaded with our test links. Open the "Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb" file and run the code. The user will be prompted to select from a list of product categories or to update the data. Users should update the dat when they first open the code, as this reruns all the scrapers to ensure the data you select in the next step is the most up to date. After updating data and selecting your category the user will then select specific products within those categories. This will display the Price, currency, brand and model. Users will then be asked if they wish to plot their data, from there the historical data will be plotted onto a visual graph for easy viewing.
+To use our code please download all necessary files/folders. Next Add product links from Microcenter, newegg or shopBLT to the "product_data.json" file, the JSON does already come preloaded with our test links. Open the "Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb" file and run the code. The user will be prompted to select from a list of product categories or to update the data. Users should update the dat when they first open the code, as this reruns all the scrapers to ensure the data you select in the next step is the most up to date. After updating data and selecting your category the user will then select specific products within those categories. This will display the Price, currency, brand and model. Users will then be asked if they wish to plot their data, see price changes or see price logs. Based on user selection the code will either display a graphical representation of price v time, a percent change of lowest price for that product regardless of website, or a log with all historical data entries for that product.
 
 Required Python Libraries:
 - requests
@@ -54,6 +54,7 @@ Required Python Libraries:
 - http.cookiejar
 - datetime
 - json
+- numpy
 
 
 ### Team Contributions
@@ -64,6 +65,7 @@ Vincent:
 - Added to Readme
 - Made Pytest class for main scraper
 - Made UI plot historical Data
+- Made the Historical Data Log function
 
 Salvatore:
 - Turned sub scrapers into classes
@@ -71,4 +73,5 @@ Salvatore:
 - Added to Readme
 - Found product pages to be scraped
 - Added exception handling and comments
+- Made the price change percentage function
 
