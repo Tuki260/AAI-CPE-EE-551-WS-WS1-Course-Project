@@ -12,7 +12,7 @@ class mainScraper:
     It also updates a JSON file that stores historical price data for each tracked product.
     """
 
-    def __init__(self, json_path):
+    def __init__(self):
         """
         Initialize the mainScraper and create a dictionary of supported scrapers.
 
@@ -21,7 +21,6 @@ class mainScraper:
 
         Uses composition by containing instances of website-specific scrapers.
         """
-        self.json_path = json_path
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
