@@ -1,9 +1,10 @@
 # scrapers/newegg.py
 import re
 import gzip
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from http.cookiejar import CookieJar
 from urllib.request import Request, build_opener, HTTPCookieProcessor
+from socket import timeout as SocketTimeout
 
 class NeweggScrapeError(Exception):
     """Raised when Newegg data cannot be extracted."""
@@ -30,6 +31,7 @@ class NeweggScraper:
         """
 
         self.timeout = timeout
+        # Cookie jar helps maintain a browser-like session
         self.cookie_jar = CookieJar()
         self.opener = build_opener(HTTPCookieProcessor(self.cookie_jar))
         self.user_agent = user_agent or (
@@ -40,38 +42,53 @@ class NeweggScraper:
     def _fetch_html(self, url: str) -> str:
         """
         Fetch the raw HTML from a Newegg product page.
-        This method sends an HTTP request with browser-like headers.
-
-        url (str): Newegg product URL.
-
-        Returns:
-            str: HTML content of the page.
-
-        If Newegg blocks the request, the NeweggScrapeError exception is raised
         """
-
+        # Browser-like headers reduce blocking
         headers = {
-        "User-Agent": self.user_agent,
-        "Accept-Language": "en-US,en;q=0.9",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Referer": "https://www.newegg.com/",
-        "Accept-Encoding": "gzip, deflate",
-        "Connection": "close",
-        "Upgrade-Insecure-Requests": "1",
-    }
+            "User-Agent": self.user_agent,
+            "Accept-Language": "en-US,en;q=0.9",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Referer": "https://www.newegg.com/",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "close",
+            "Upgrade-Insecure-Requests": "1",
+        }
 
         req = Request(url, headers=headers)
 
         try:
+            # Attempt to fetch page HTML
             with self.opener.open(req, timeout=self.timeout) as resp:
                 raw = resp.read()
                 encoding = (resp.headers.get("Content-Encoding") or "").lower()
-        except HTTPError as e:
-            raise NeweggScrapeError(f"HTTP {e.code}: Forbidden by Newegg") from e
 
+        except HTTPError as e:
+            # HTTP errors such as 403 or 404
+            raise NeweggScrapeError(
+                f"HTTP {e.code} fetching Newegg URL: {url}"
+            ) from e
+        except (URLError, SocketTimeout) as e:
+            # Network or timeout issues
+            raise NeweggScrapeError(
+                f"Network/timeout error fetching Newegg URL: {url}"
+            ) from e
+        except Exception as e:
+            # Last-resort safety net
+            raise NeweggScrapeError(
+                f"Unexpected error fetching Newegg URL: {url}"
+            ) from e
+
+        # Decompress gzip responses if required
         if "gzip" in encoding:
-            raw = gzip.decompress(raw)
+            try:
+                raw = gzip.decompress(raw)
+            except Exception:
+                # Fallback if decompression fails
+                pass
+
+        # Decode HTML for regex processing
         return raw.decode("utf-8", errors="replace")
+
 
     def get_price_currency(self, html: str):
         """
@@ -140,12 +157,13 @@ class NeweggScraper:
         """
 
         html = self._fetch_html(url)
-        
+        #Get individual data from the HTML
         brand = self.get_brand(html)
         model = self.get_model(html)
         # series = self.get_series(html)
         price, currency = self.get_price_currency(html)
-        if price is not None and currency and brand and (model or series):
+        # All fields are required for a valid result
+        if price is not None and currency and brand and model:
             return price, currency, brand, model#, series
 
         raise NeweggScrapeError("Could not find a reliable price on the Newegg page.")
@@ -156,5 +174,5 @@ if __name__ == "__main__":
     # url = "https://www.newegg.com/g-skill-trident-z5-rgb-series-32gb-ddr5-6000-cas-latency-cl36-desktop-memory-black/p/N82E16820374351?Item=N82E16820374351"
     url = "https://www.newegg.com/g-skill-ripjaws-m5-neo-rgb-series-32gb-ddr5-6000-cas-latency-cl36-desktop-memory-black/p/N82E16820374642?Item=N82E16820374642"
     # url = "https://www.newegg.com/asus-b650e-max-gaming-wifi-w-atx-motherboard-amd-b650-am5/p/N82E16813119736"
-    price, currency, brand, model, series = scraper.scrape_data(url)
-    print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}\nSeries: {series}")
+    price, currency, brand, model = scraper.scrape_data(url)
+    print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}")

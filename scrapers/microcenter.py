@@ -1,7 +1,8 @@
 # scrapers/microcenter.py
 import re
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
+from socket import timeout as SocketTimeout
 
 
 class MicrocenterScrapeError(Exception):
@@ -37,14 +38,6 @@ class MicrocenterScraper:
     def _fetch_html(self, url: str) -> str:
         """
         Fetch the raw HTML from a Microcenter product page.
-
-        url (str): Microcenter product URL.
-
-        Returns:
-            str: HTML content of the page.
-
-        Raises:
-            MicrocenterScrapeError: If the request fails.
         """
         headers = {
             "User-Agent": self.user_agent,
@@ -60,12 +53,25 @@ class MicrocenterScraper:
         try:
             with urlopen(req, timeout=self.timeout) as resp:
                 raw = resp.read()
-        except HTTPError as e:
-            raise MicrocenterScrapeError(
-                f"HTTP {e.code}: Error fetching Microcenter page"
-            ) from e
 
-        return raw.decode("utf-8", errors="replace")
+                # If server provides a charset, we use it otherwise we default to utf-8.
+                content_type = resp.headers.get("Content-Type", "")
+                m = re.search(r"charset=([^\s;]+)", content_type, re.I)
+                encoding = m.group(1) if m else "utf-8"
+
+        except HTTPError as e:
+            raise MicrocenterScrapeError(f"HTTP {e.code} fetching Microcenter URL: {url}") from e
+        except (URLError, SocketTimeout) as e:
+            raise MicrocenterScrapeError(f"Network/timeout error fetching Microcenter URL: {url}") from e
+        except Exception as e:
+            # last-resort catch so our program doesn't hard-crash
+            raise MicrocenterScrapeError(f"Unexpected error fetching Microcenter URL: {url}") from e
+
+        try:
+            return raw.decode(encoding, errors="replace")
+        except LookupError:
+            # unknown encoding name -> fallback
+            return raw.decode("utf-8", errors="replace")
 
     def get_price_currency(self, html: str):
         """
@@ -97,14 +103,14 @@ class MicrocenterScraper:
         """
         Extract the product brand from the HTML.
         """
-        m = re.search(r"'brand'\s*:\s*'([^']+)'", html)
+        m = re.search(r"'brand'\s*:\s*'([^']+)'", html) # Look for the product price value in embedded page data
         return m.group(1) if m else None
 
     def get_model(self, html: str):
         """
         Extract the product model number (MPN) from the HTML.
         """
-        m = re.search(r"'mpn'\s*:\s*'([^']+)'", html)
+        m = re.search(r"'mpn'\s*:\s*'([^']+)'", html) # MPN is used as a unique model identifier
         return m.group(1) if m else None
 
     def scrape_data(self, url: str):
@@ -118,17 +124,15 @@ class MicrocenterScraper:
             MicrocenterScrapeError
         """
         html = self._fetch_html(url)
-
+        # Extract individual data fields from the HTML
         price, currency = self.get_price_currency(html)
         brand = self.get_brand(html)
         model = self.get_model(html)
 
         if price is not None and currency and brand and model:
             return price, currency, brand, model
-
-        raise MicrocenterScrapeError(
-            "Could not find a reliable price on the Microcenter page."
-        )
+        # Raise an error if parsing the data failed
+        raise MicrocenterScrapeError("Could not find a reliable price on the Microcenter page.")
 
 
 if __name__ == "__main__":
@@ -136,6 +140,6 @@ if __name__ == "__main__":
     #url = "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black"
     url = "https://www.microcenter.com/product/688526/corsair-vengeance-rgb-32gb-(2-x-16gb)-ddr5-6000-pc5-48000-cl36-dual-channel-desktop-memory-kit-cmh32gx5m2m6000z36-black"
 
-    price, currency, brand, model = scraper.scrape_microcenter(url)
+    price, currency, brand, model = scraper.scrape_data(url)
     print(f"Price: {price}\nCurrency: {currency}\nBrand: {brand}\nModel: {model}")
 
