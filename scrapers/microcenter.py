@@ -1,4 +1,3 @@
-# scrapers/microcenter.py
 import re
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen

@@ -1,4 +1,3 @@
-# scrapers/newegg.py
 import re
 import gzip
 from urllib.error import HTTPError, URLError

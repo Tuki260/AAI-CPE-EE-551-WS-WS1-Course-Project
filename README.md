@@ -45,15 +45,22 @@ AAI-CPE-EE-551-WS-WS1-Course-Project
 To use our code please download all necessary files/folders. Open the "Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb" file and run the code. The user will be prompted to select from a list of product categories, update the data, or add new products. Users should update the data when they first open the code, as this reruns all the scrapers to ensure the data you select in the next step is the most up to date. After updating data and selecting your category the user will then select specific products within those categories. Users will then be asked if they wish to plot their data, see price changes or see price logs. Based on user selection the code will either display a graphical representation of price vs time, a percent change of lowest price for that product regardless of website, or a log with all historical data entries for that product.
 
 Required Python Libraries:
-- matplotlib
-- urllib.error
-- erllib.request
-- socket
-- gzip
-- http.cookiejar
-- datetime
+
+- sys
+- os
 - json
+- datetime
+- typing
+- re
+- gzip
+- urllib
+  * urllib.request
+  * urllib.error
+- http.cookiejar
+- socket
 - numpy
+- matplotlib
+  * matplotlib.pyplot
 
 
 ### Team Contributions

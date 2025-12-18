@@ -1,13 +1,3 @@
-"""
-add_product.py
-
-Importable module to add a new product entry to product_data.json.
-
-Use in a notebook:
-    from add_product import add_product_interactive
-    add_product_interactive("product_data.json")
-"""
-
 import json
 import os
 from typing import Dict, Optional
