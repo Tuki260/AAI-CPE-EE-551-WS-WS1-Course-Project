@@ -13,7 +13,7 @@ import os
 from typing import Dict, Optional
 
 
-def load_product_data(path: str) -> Dict:
+def load_product_data(path: str):
     """Load JSON data from disk, or return an empty dict if the file does not exist."""
     if not os.path.exists(path):
         return {}
@@ -22,7 +22,7 @@ def load_product_data(path: str) -> Dict:
         return json.load(f)
 
 
-def save_product_data(path: str, data: Dict) -> None:
+def save_product_data(path: str, data: Dict):
     """Save JSON data back to disk with pretty formatting."""
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
@@ -96,7 +96,7 @@ def add_product(
     return True
 
 
-def add_product_interactive(file_path: str = "product_data.json") -> None:
+def add_product_interactive(file_path: str = "product_data.json"):
     """
     Interactive flow for adding a product.
     Safe to call from a Jupyter notebook.

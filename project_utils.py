@@ -51,12 +51,11 @@ def display_menu(options: list[str], prompt: str | None = None):
         print("\nInvalid choice. Please enter a valid number or option name.\n")
 
 
-def get_all_categories(file_path: str) -> set[str]:
+def get_all_categories(file_path: str):
     """
     Extract all unique product categories from a products JSON file.
 
-    Args:
-        file_path (str): Path to the products JSON file.
+    file_path (str): Path to the products JSON file.
 
     Returns:
         set[str]: Unique category names.
@@ -73,13 +72,12 @@ def get_all_categories(file_path: str) -> set[str]:
 
     return categories
 
-def get_products_by_category(file_path: str, category: str) -> list[str]:
+def get_products_by_category(file_path: str, category: str):
     """
     Return all product names that belong to a given category.
 
-    Args:
-        file_path (str): Path to the products JSON file.
-        category (str): Category to filter by (case-insensitive).
+    file_path (str): Path to the products JSON file.
+    category (str): Category to filter by (case-insensitive).
 
     Returns:
         list[str]: List of product names in that category.
@@ -96,7 +94,7 @@ def get_products_by_category(file_path: str, category: str) -> list[str]:
 
     return results
 
-def get_latest_prices_for_product(file_path: str, product_name: str) -> dict[str, dict[str, Any] | None]:
+def get_latest_prices_for_product(file_path: str, product_name: str):
     """
     Load products JSON from file and return the latest price record for each source
     for the given product.
@@ -127,13 +125,12 @@ def get_latest_prices_for_product(file_path: str, product_name: str) -> dict[str
     return latest_by_source
 
 
-def plot_price_history(file_path: str, product_name: str) -> None:
+def plot_price_history(file_path: str, product_name: str):
     """
     Plot price history over time for a product across all sources in the JSON file.
 
-    Args:
-        file_path (str): Path to the products JSON file.
-        product_name (str): Exact product name key in the JSON (e.g., "Corsair Vengeance RGB DDR5 32GB").
+    file_path (str): Path to the products JSON file.
+    product_name (str): Exact product name key in the JSON (e.g., "Corsair Vengeance RGB DDR5 32GB").
 
     Raises:
         FileNotFoundError: If the JSON file can't be found.
@@ -204,7 +201,7 @@ def plot_price_history(file_path: str, product_name: str) -> None:
     plt.tight_layout()
     plt.show()
 
-def get_price_change(file_path: str, product_name: str) -> float:
+def get_price_change(file_path: str, product_name: str):
     """
     Compute percent price change over time using the best (minimum) price
     available across all retailers at each timestamp.
@@ -239,7 +236,7 @@ def get_price_change(file_path: str, product_name: str) -> float:
     #equation to compare the lowest two prices across any of the websites for the given product and outputs it as a percentage of change
     return float((best_prices[-1] - best_prices[0]) / best_prices[0] * 100)
 
-def iter_product_price_points(file_path: str, product_name: str) -> Iterator[Tuple[str, int, Dict[str, Any]]]:
+def iter_product_price_points(file_path: str, product_name: str):
     """
     Generator that yields all price datapoints for a given product across all sources.
 
