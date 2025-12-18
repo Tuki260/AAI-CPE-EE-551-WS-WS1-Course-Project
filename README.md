@@ -24,6 +24,7 @@ We plan to make the representation of this data easily understandable through bo
 
 ### Program Structure
 
+```text
 AAI-CPE-EE-551-WS-WS1-Course-Project
 ├── README.md
 ├── Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb
@@ -31,12 +32,13 @@ AAI-CPE-EE-551-WS-WS1-Course-Project
 ├── product_data.json
 ├── project_utils.py
 ├── scrapers
-│   ├── init.py
+│   ├── __init__.py
 │   ├── mainScraper.py
 │   ├── microcenter.py
 │   ├── newegg.py
 │   └── shopblt.py
 └── test_scraper.py
+```
 
 ### How To Use
 
