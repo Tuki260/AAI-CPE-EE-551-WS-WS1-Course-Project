@@ -44,6 +44,13 @@ AAI-CPE-EE-551-WS-WS1-Course-Project
 
 To use our code please download all necessary files/folders. Open the "Renda_Vincent_ScottoDiVetta_Salvatore_Project.ipynb" file and run the code. The user will be prompted to select from a list of product categories, update the data, or add new products. Users should update the data when they first open the code, as this reruns all the scrapers to ensure the data you select in the next step is the most up to date. After updating data and selecting your category the user will then select specific products within those categories. Users will then be asked if they wish to plot their data, see price changes or see price logs. Based on user selection the code will either display a graphical representation of price vs time, a percent change of lowest price for that product regardless of website, or a log with all historical data entries for that product.
 
+When adding products, our scraper only works with:
+- newegg.com
+- shopblt.com
+- microcenter.com
+
+When you want to add a product, make sure you choose the same product from at least 2 of the supported websites. You will be prompted for a device name, a device category, and the websites for the URLs. Make sure the device category is spelt the same way as the categories from the main menu
+
 Required Python Libraries:
 
 - sys
