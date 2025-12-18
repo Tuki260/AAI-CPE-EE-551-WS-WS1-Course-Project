@@ -1,5 +1,6 @@
 from . import microcenter, newegg, shopblt
 import json
+from json import JSONDecodeError
 from datetime import datetime
 
 class mainScraper:
@@ -61,51 +62,88 @@ class mainScraper:
         if domain in self.scrapers:
             return self.scrapers[domain]
 
-    def scrape_product(self, url):
+    def scrape_product(self, url: str):
         """
         Scrape a single product page using the correct scraper.
 
-        url (str): Product URL.
-
         Returns:
             tuple: (price, currency, brand, model)
-
-        Website-specific scraper may raise its own custom exception if the price cannot be extracted.
         """
         scraper = self.determine_scraper(url)
+        if scraper is None:
+            # Unsupported website: fail gracefully
+            print(f"[WARN] Unsupported URL (no scraper found): {url}")
+            return None, None, None, None
 
-        if hasattr(scraper, "scrape_data"):
-            price, currency, brand, model = scraper.scrape_data(url)
+        try:
+            # calll scrape_data from all our scrapers
+            return scraper.scrape_data(url)
 
-        return price, currency, brand, model
+        except (microcenter.MicrocenterScrapeError,
+                newegg.NeweggScrapeError,
+                shopblt.ShopBLTScrapeError) as e:
+            # Scraper-specific parsing or network errors
+            print(f"[WARN] Scrape failed for {url}: {e}")
+            return None, None, None, None
+
+        except Exception as e:
+            # Last-resort catch so a bad URL doesn't crash everything
+            print(f"[WARN] Unexpected scrape error for {url}: {e}")
+            return None, None, None, None
     
-    def update_json_data(self):
+    def update_json_data(self, json_path: str = "../product_data.json"):
         """
         Update product_data.json by scraping current prices for each product source.
 
-        Loads the JSON file containing tracked products + sources
-        Scrapes each URL for its current price
-        Appends a new entry to the 'prices' history list with timestamp
-        Writes the updated JSON back to file
+        - Loads the JSON file containing tracked products + sources
+        - Scrapes each URL for its current price
+        - Appends a new entry to the 'prices' history list with timestamp
+        - Writes the updated JSON back to file
 
-        This creates a growing dataset that can later be plotted/analyzed.
+        This allows gives us a running data list for plotting later
         """
+        # Load tracked products from disk
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError:
+            print(f"[ERROR] Could not find JSON file: {json_path}")
+            return
+        except JSONDecodeError as e:
+            print(f"[ERROR] JSON file is not valid: {json_path} ({e})")
+            return
+        except OSError as e:
+            print(f"[ERROR] Could not read JSON file: {json_path} ({e})")
+            return
 
-        with open("../product_data.json") as f:
-            data = json.load(f)
-        
         timestamp = datetime.now().isoformat()
+
+        # Walk through each product and each website source URL
         for product_name, product_data in data.items():
-            for source_name, source_data in product_data["sources"].items():
-                url = source_data["url"]
+            sources = product_data.get("sources", {})
+            for source_name, source_data in sources.items():
+                url = source_data.get("url")
+                if not url:
+                    print(f"[WARN] Missing URL for {product_name} -> {source_name}")
+                    continue
+
                 price, currency, brand, model = self.scrape_product(url)
-                price_entry = {
-                    "price": price,
-                    "timestamp": timestamp
-                }
-                source_data["prices"].append(price_entry)
-        with open("../product_data.json", "w") as f:
-            json.dump(data, f, indent=4)
+
+                # Only store meaningful price entries
+                if price is None:
+                    continue
+
+                price_entry = {"price": price, "timestamp": timestamp}
+
+                # Ensure the history list exists before appending
+                source_data.setdefault("prices", []).append(price_entry)
+
+        # Save updated dataset back to disk
+        try:
+            with open(json_path, "w", encoding="utf-8") as f:
+                json.dump(data, f, indent=4)
+        except OSError as e:
+            print(f"[ERROR] Could not write JSON file: {json_path} ({e})")
 
 
 if __name__ == "__main__":
