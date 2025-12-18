@@ -83,11 +83,17 @@ class MicrocenterScraper:
         price = None
         currency = None
 
-        m = re.search(r"'productPrice'\s*:\s*'([\d,]+(?:\.\d+)?)'", html)
+        m = re.search(
+            r"'productPrice'\s*:\s*'([\d,]+(?:\.\d+)?)'",
+            html
+        )
         if m:
             price = float(m.group(1).replace(",", ""))
 
-        m = re.search(r'"priceCurrency"\s*:\s*"([A-Z]{3})"', html)
+        m = re.search(
+            r'"priceCurrency"\s*:\s*"([A-Z]{3})"',
+            html
+        )
         if m:
             currency = m.group(1)
 
