@@ -205,7 +205,7 @@ def plot_price_history(file_path: str, product_name: str) -> None:
     plt.tight_layout()
     plt.show()
 
-def get_best_price_change(file_path: str, product_name: str) -> float:
+def get_price_change(file_path: str, product_name: str) -> float:
     """
     Compute percent price change over time using the best (minimum) price
     available across all retailers at each timestamp.
