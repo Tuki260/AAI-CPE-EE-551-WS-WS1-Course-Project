@@ -11,7 +11,7 @@ class mainScraper:
     It also updates a JSON file that stores historical price data for each tracked product.
     """
 
-    def __init__(self):
+    def __init__(self, json_path):
         """
         Initialize the mainScraper and create a dictionary of supported scrapers.
 
@@ -20,7 +20,7 @@ class mainScraper:
 
         Uses composition by containing instances of website-specific scrapers.
         """
-
+        self.json_path = json_path
         self.scrapers = {
             "microcenter.com": microcenter.MicrocenterScraper(),
             "newegg.com": newegg.NeweggScraper(),
@@ -91,7 +91,7 @@ class mainScraper:
         This creates a growing dataset that can later be plotted/analyzed.
         """
 
-        with open("../product_data.json") as f:
+        with open(self.json_path) as f:
             data = json.load(f)
         
         timestamp = datetime.now().isoformat()
@@ -104,7 +104,7 @@ class mainScraper:
                     "timestamp": timestamp
                 }
                 source_data["prices"].append(price_entry)
-        with open("../product_data.json", "w") as f:
+        with open(self.json_path, "w") as f:
             json.dump(data, f, indent=4)
 
 
